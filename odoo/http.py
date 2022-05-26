@@ -1030,6 +1030,10 @@ class OpenERPSession(sessions.Session):
             REMOTE_ADDR=wsgienv['REMOTE_ADDR'],
         )
         uid = odoo.registry(db)['res.users'].authenticate(db, login, password, env)
+
+        # request env needs to be able to access the latest changes from the auth layers
+        request.env.cr.commit()
+
         self.pre_uid = uid
 
         self.rotate = True
