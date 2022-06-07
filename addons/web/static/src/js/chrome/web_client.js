@@ -15,6 +15,7 @@ return AbstractWebClient.extend({
         menu_clicked: 'on_menu_clicked',
     }),
     start: function () {
+        this._ignore_hashchange = true;
         core.bus.on('change_menu_section', this, function (menuID) {
             this.do_push_state(_.extend($.bbq.getState(), {
                 menu_id: menuID,
@@ -79,9 +80,11 @@ return AbstractWebClient.extend({
 
         await this.menu_dp.add(this.instanciate_menu_widgets());
         $(window).bind('hashchange', this.on_hashchange);
+        this._ignore_hashchange = true;
 
         const state = $.bbq.getState(true);
         if (!_.isEqual(_.keys(state), ["cids"])) {
+            this._ignore_hashchange = false;
             return this.on_hashchange();
         }
 
